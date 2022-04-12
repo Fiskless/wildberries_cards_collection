@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+<h1 class="m-3">Вход</h1>
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <p>Пожалуйста, введите свои данные</p>
+                <form action="." method="post" novalidate>
+                    {{ form|crispy }}
+                    {% csrf_token %}
+                    <p></p>
+                    <p><input type="submit" value="Войти"></p>
+                    <a class="" href="{% url 'register' %}">Зарегистрироваться</a>
+                </form>
+        </div>
+    </div>
+{% endblock %}

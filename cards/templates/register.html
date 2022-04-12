@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+<h1 class="m-3">Создание аккаунта</h1>
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <p>Пожалуйста, заполните следующие поля:</p>
+            <form action="." method="post" novalidate>
+                {{ user_form|crispy }}
+                {% csrf_token %}
+                <p><input type="submit" value="Создать аккаунт"></p>
+            </form>
+        </div>
+    </div>
+{% endblock %}
