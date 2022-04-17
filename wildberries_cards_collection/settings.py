@@ -190,3 +190,5 @@ SIMPLE_JWT = {
 
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+SELENIUM_SERVER_URL = 'http://127.0.0.1:4444/wd/hub'
