@@ -3,7 +3,6 @@ from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator
 
 
-
 TIME_INTERVAL_CHOICES = [
     ('1 hour', '1 час'),
     ('12 hours', '12 часов'),
@@ -67,7 +66,7 @@ class TrackParameter(models.Model):
         help_text='Дата конца периода отслеживания товара',
     )
     time_interval = models.CharField(
-        'Длительность аренды',
+        'Интервал отслеживания',
         max_length=10,
         choices=TIME_INTERVAL_CHOICES,
         default='1hour')

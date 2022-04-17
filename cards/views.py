@@ -3,7 +3,9 @@ from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse, HttpResponseRedirect
 from django.db import transaction
 from django.urls import reverse
-from .forms import LoginForm, UserRegistrationForm
+from .models import Product, TrackParameter
+from .forms import LoginForm, UserRegistrationForm, TrackParameterForm
+from .parse_wildberries import get_wb_page_data
 
 
 @transaction.atomic
@@ -42,3 +44,17 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return HttpResponseRedirect(reverse('login', args=[0]))
+
+
+def create_product_track(request):
+    if request.method == 'POST':
+        form = TrackParameterForm(request.POST)
+        if form.is_valid():
+            cd = form.cleaned_data
+            new_track = form.save()
+            new_track.user.add(request.user)
+            data = get_wb_page_data(cd['article'])
+        return redirect('/')
+    else:
+        form = TrackParameterForm()
+        return render(request, 'track_parameters.html', {'form': form})
