@@ -90,7 +90,7 @@ WSGI_APPLICATION = 'wildberries_cards_collection.wsgi.application'
 DATABASES = {
     'default': env.dj_db_url(
         'DATABASE_URL',
-        env.str('DATABASE_URL', 'postgres://cards:CyctIn4onEf@localhost:5432/cards_db'),
+        env.str('DATABASE_URL', 'postgres://cards:password@postgres:5432/cards_db'),
     )
 }
 
