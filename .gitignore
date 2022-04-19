@@ -149,3 +149,5 @@ ConfigMap.yaml
 kubernetes_test/
 tracking_old.py
 .DS_Store
+celerybeat-schedule
+postgres-data

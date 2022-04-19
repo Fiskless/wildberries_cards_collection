@@ -3,9 +3,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse, HttpResponseRedirect
 from django.db import transaction
 from django.urls import reverse
-from .models import Product, TrackParameter
 from .forms import LoginForm, UserRegistrationForm, TrackParameterForm
-from .parse_wildberries import get_wb_page_data
+from .tasks import update_product_data
 
 
 @transaction.atomic
@@ -53,7 +52,7 @@ def create_product_track(request):
             cd = form.cleaned_data
             new_track = form.save()
             new_track.user.add(request.user)
-            data = get_wb_page_data(cd['article'])
+            res = update_product_data.delay(cd['article'])
         return redirect('/')
     else:
         form = TrackParameterForm()

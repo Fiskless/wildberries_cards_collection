@@ -12,7 +12,3 @@ RUN apt update && apt install -y python3-pip                                  \
     && rm -rf /var/lib/apt/lists/*
 
 COPY . /code/
-
-RUN SECRET_KEY=empty python manage.py collectstatic --noinput
-
-VOLUME ["/media"]

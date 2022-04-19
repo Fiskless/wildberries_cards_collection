@@ -4,8 +4,7 @@ from contextlib import contextmanager
 from django.conf import settings
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException, \
-    StaleElementReferenceException, ElementClickInterceptedException, \
-    TimeoutException
+    StaleElementReferenceException, TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.ui import WebDriverWait
@@ -71,8 +70,6 @@ def get_wb_page_data(article):
                 .text
             price_without_discount_penny = int(
                 re.sub(r'\s', '', price_without_discount).replace('₽', '')) * 100
-            # price_without_discount_penny = int(
-            #     price_without_discount.split(' ')[0]) * 100
         except TimeoutException:
             price_without_discount_penny = price_with_discount_penny
 

@@ -17,14 +17,35 @@ services:
       "selenium/standalone-chrome"
     ports:
       - "127.0.0.1:4444:4444"
-    environment:
-      NODE_MAX_SESSION: 10
-      NODE_MAX_INSTANCES: 10
     shm_size: "3gb"
+
+  redis:
+    image:
+      "redis"
+    ports:
+      - "0.0.0.0:6379:6379"
+
+  celery:
+    build: .
+    command: celery -A wildberries_cards_collection worker -l info
+    volumes:
+      - .:/code
+    depends_on:
+      - redis
+      - postgres
+
+  celery-beat:
+    build: .
+    command: celery -A wildberries_cards_collection beat -l info
+    volumes:
+      - .:/code
+    depends_on:
+      - redis
+      - postgres
 
   django:
     build: .
-    command: bash -c "python /code/manage.py migrate --noinput && gunicorn appointment_assistant_project.wsgi:application --bind 0.0.0.0:8000 --reload"
+    command: bash -c "python /code/manage.py migrate --noinput && python /code/manage.py collectstatic --noinput &&  gunicorn appointment_assistant_project.wsgi:application --bind 0.0.0.0:8000 --reload"
     ports:
       - 8000:8000
     depends_on:
