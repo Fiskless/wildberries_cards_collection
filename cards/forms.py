@@ -1,5 +1,8 @@
-from django.contrib.auth.models import User
+import datetime
+
 from django import forms
+from django.contrib.auth.models import User
+from django.utils.timezone import utc
 from .models import TrackParameter
 
 
@@ -50,6 +53,14 @@ class TrackParameterForm(forms.ModelForm):
 
     def clean_end_at(self):
         cd = self.cleaned_data
+        if cd['end_at'] < datetime.datetime.utcnow().replace(tzinfo=utc):
+            raise forms.ValidationError('End time should be more current time')
         if cd['start_at'] >= cd['end_at']:
-            raise forms.ValidationError('Start data should be less end data')
+            raise forms.ValidationError('Start time should be less end time')
         return cd['end_at']
+
+    def clean_start_at(self):
+        cd = self.cleaned_data
+        if cd['start_at'] < datetime.datetime.utcnow().replace(tzinfo=utc):
+            raise forms.ValidationError('Start time should be more or equal current time')
+        return cd['start_at']

@@ -53,7 +53,7 @@ def create_product_track(request):
             new_track = form.save()
             new_track.user.add(request.user)
             res = update_product_data.delay(cd['article'])
-        return redirect('/')
+            return redirect('/')
     else:
         form = TrackParameterForm()
-        return render(request, 'track_parameters.html', {'form': form})
+    return render(request, 'track_parameters.html', {'form': form})
