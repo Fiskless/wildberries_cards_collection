@@ -24,10 +24,9 @@ class TrackParameterVListView(generics.ListAPIView):
         return TrackParameter.objects.filter(user=self.request.user)
 
 
-class ProductListView(generics.ListAPIView):
+class ProductsListView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = ProductListSerializer
-    queryset = Product.objects.all()
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = ProductListFilter
 
@@ -35,3 +34,14 @@ class ProductListView(generics.ListAPIView):
         tracks = TrackParameter.objects.filter(user=self.request.user)
         return Product.objects.filter(track__in=tracks)
 
+
+class ProductListView(generics.ListAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = ProductListSerializer
+
+    def get_queryset(self):
+        tracks = TrackParameter.objects.filter(user=self.request.user)
+        return Product.\
+            objects.\
+            filter(track__in=tracks).\
+            filter(article=self.kwargs['article'])
