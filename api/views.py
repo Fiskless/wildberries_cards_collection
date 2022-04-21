@@ -1,3 +1,6 @@
+import datetime
+
+from django.utils.timezone import utc
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from api.serializers import TrackParameterSerializer, ProductListSerializer
@@ -37,6 +40,31 @@ class TrackParameterListView(generics.ListAPIView):
 
     def get_queryset(self):
         return TrackParameter.objects.filter(user=self.request.user)
+
+
+class TrackParameterDetailView(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = TrackParameterSerializer
+
+    def get_object(self):
+        track = TrackParameter.\
+            objects.\
+            filter(id=self.kwargs['pk']).\
+            filter(start_at__gte=datetime.datetime.utcnow().replace(tzinfo=utc)).\
+            first()
+        return track
+
+
+class ProductsForTrackParameterListView(generics.ListAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = ProductListSerializer
+
+    def get_queryset(self):
+        tracks = TrackParameter.\
+            objects.\
+            filter(id=self.kwargs['pk']).\
+            prefetch_related('products').first()
+        return tracks.products.all()
 
 
 class ProductsListView(generics.ListAPIView):
