@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse, HttpResponseRedirect
@@ -40,11 +41,13 @@ def login_view(request):
         return render(request, 'login.html', {'form': form})
 
 
+@login_required
 def logout_view(request):
     logout(request)
     return HttpResponseRedirect(reverse('login', args=[0]))
 
 
+@login_required
 def create_product_track(request):
     if request.method == 'POST':
         form = TrackParameterForm(request.POST)
