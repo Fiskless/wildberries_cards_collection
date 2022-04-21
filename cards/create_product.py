@@ -9,12 +9,12 @@ def create_product(time_interval):
     for track in TrackParameter.objects.all():
         if track.start_at <= datetime.datetime.utcnow().replace(tzinfo=utc) <= track.end_at and track.time_interval == time_interval:
             article, brand, name, price_without_discount_penny, price_with_discount_penny, seller = get_wb_page_data(track.article)
-            Product.objects.create(
+            product = Product.objects.create(
                 article=article,
                 brand=brand,
                 name=name,
                 price_without_discount=price_without_discount_penny,
                 price_with_discount=price_with_discount_penny,
                 seller=seller,
-                track=track,
             )
+            product.track.add(track)

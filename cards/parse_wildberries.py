@@ -6,7 +6,6 @@ from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException, \
     StaleElementReferenceException, TimeoutException
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.ui import WebDriverWait
 
 
@@ -24,6 +23,7 @@ def start_chrome_driver(selenium_server_url=settings.SELENIUM_SERVER_URL):
 
     chrome_options = webdriver.ChromeOptions()
     chrome_options.add_argument('--headless')
+    chrome_options.add_argument('--disable-blink-features=AutomationControlled')
     driver = webdriver.Remote(selenium_server_url, options=chrome_options)
     try:
         yield driver
@@ -31,12 +31,17 @@ def start_chrome_driver(selenium_server_url=settings.SELENIUM_SERVER_URL):
         driver.quit()
 
 
+def find_web_element(selector):
+    return lambda x: x.find_element(By.CSS_SELECTOR, selector)
+
+
 def get_wb_page_data(article):
     url = f'https://www.wildberries.ru/catalog/{article}/detail.aspx'
 
-    with start_chrome_driver() as driver:
+    with start_chrome_driver('http://127.0.0.1:4444/wd/hub') as driver:
 
         driver.get(url)
+
         ignored_exceptions = (
             NoSuchElementException,
             StaleElementReferenceException,
@@ -46,27 +51,21 @@ def get_wb_page_data(article):
                                     ignored_exceptions=ignored_exceptions)
 
         brand = wait_driver\
-            .until(expected_conditions.
-                   presence_of_element_located((By.CSS_SELECTOR, BRAND_SELECTOR)))\
+            .until(find_web_element(BRAND_SELECTOR))\
             .text
 
         name = wait_driver\
-            .until(expected_conditions.
-                   presence_of_element_located((By.CSS_SELECTOR, NAME_SELECTOR)))\
+            .until(find_web_element(NAME_SELECTOR))\
             .text
 
         price_with_discount = wait_driver \
-            .until(expected_conditions.
-            presence_of_element_located(
-            (By.CSS_SELECTOR, PRICE_WITH_DISCOUNT_SELECTOR))) \
+            .until(find_web_element(PRICE_WITH_DISCOUNT_SELECTOR)) \
             .text
         price_with_discount_penny = int(re.sub(r'\s', '', price_with_discount).replace('₽', '')) * 100
 
         try:
             price_without_discount = wait_driver \
-                .until(expected_conditions.
-                presence_of_element_located(
-                (By.CSS_SELECTOR, PRICE_WITHOUT_DISCOUNT_SELECTOR))) \
+                .until(find_web_element(PRICE_WITHOUT_DISCOUNT_SELECTOR)) \
                 .text
             price_without_discount_penny = int(
                 re.sub(r'\s', '', price_without_discount).replace('₽', '')) * 100
@@ -75,14 +74,11 @@ def get_wb_page_data(article):
 
         try:
             seller = wait_driver\
-                .until(expected_conditions.
-                       presence_of_element_located((By.CSS_SELECTOR, OTHER_SELLER_SELECTOR)))\
+                .until(find_web_element(OTHER_SELLER_SELECTOR))\
                 .text
         except TimeoutException:
             seller = wait_driver \
-                .until(expected_conditions.
-                       presence_of_element_located((By.CSS_SELECTOR, WB_SELLER_SELECTOR))) \
+                .until(find_web_element(WB_SELLER_SELECTOR)) \
                 .text
 
     return int(article), brand, name, price_without_discount_penny, price_with_discount_penny, seller
-
