@@ -16,4 +16,5 @@ def create_product(time_interval):
                 price_without_discount=price_without_discount_penny,
                 price_with_discount=price_with_discount_penny,
                 seller=seller,
+                track=track,
             )

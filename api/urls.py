@@ -5,4 +5,7 @@ from api.views import TrackParameterCreateView, TrackParameterVListView, \
 urlpatterns = [
     path('auth/', include('djoser.urls')),
     path('auth/', include('djoser.urls.jwt')),
+    path('user/track_create/', TrackParameterCreateView.as_view()),
+    path('user/tracks/', TrackParameterVListView.as_view()),
+    path('user/products/', ProductListView.as_view())
 ]
