@@ -4,6 +4,7 @@ from .models import Product, TrackParameter
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
+    readonly_fields = ['time']
     pass
 
 

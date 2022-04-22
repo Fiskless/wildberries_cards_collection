@@ -1,7 +1,9 @@
+import datetime
+
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator
-
+from django.utils.timezone import utc
 
 TIME_INTERVAL_CHOICES = [
     ('1 hour', '1 час'),
@@ -31,7 +33,7 @@ class TrackParameter(models.Model):
         'Интервал отслеживания',
         max_length=10,
         choices=TIME_INTERVAL_CHOICES,
-        default='1hour')
+        default='1 hour')
     user = models.ManyToManyField(
         User,
         related_name='parameters',
@@ -78,11 +80,16 @@ class Product(models.Model):
         TrackParameter,
         related_name='products',
         verbose_name='Параметры отслеживания')
+    time = models.DateTimeField(
+        verbose_name='Время отслеживания',
+        db_index=True,
+        help_text='Время отслеживания товара',
+        default=datetime.datetime.now
+    )
 
     class Meta:
         verbose_name = 'Товар'
         verbose_name_plural = 'Товары'
 
     def __str__(self):
-        return f'{self.brand}/{self.name}'
-
+        return f'{self.brand}/ {self.name}/ {self.time.strftime("%Y-%m-%d %H:%M")}'
