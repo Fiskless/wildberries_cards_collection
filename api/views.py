@@ -1,6 +1,10 @@
 import datetime
+import django_filters
+from django import forms
 
 from django.utils.timezone import utc
+from django_filters.fields import RangeField
+from django_filters.widgets import RangeWidget
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from api.serializers import TrackParameterSerializer, ProductListSerializer
@@ -10,7 +14,7 @@ from django_filters import rest_framework as filters
 
 class ProductListFilter(filters.FilterSet):
     articles = filters.CharFilter(method='get_products_by_articles',
-                                      label='Укажите через запятую артикулы товаров, которые хотите отслеживать')
+                                  label='Укажите через запятую артикулы товаров, которые хотите отслеживать')
 
     def get_products_by_articles(self, value, queryset, name, ):
         articles = name.split(',')
@@ -25,8 +29,28 @@ class ProductListFilter(filters.FilterSet):
 class TrackParameterListFilter(filters.FilterSet):
 
     class Meta:
-        model = Product
+        model = TrackParameter
         fields = ['time_interval', 'start_at', 'end_at']
+
+
+class DateTimeInput(forms.DateTimeInput):
+    input_type = 'datetime-local'
+
+
+class ProductsForTrackParameterListViewFilter(filters.FilterSet):
+
+    start_at = django_filters.DateTimeFilter(field_name='time',
+                                             label='Укажите время начала',
+                                             lookup_expr='gte',
+                                             widget=DateTimeInput())
+
+    end_at = django_filters.DateTimeFilter(field_name='time',
+                                           label='Укажите время конца',
+                                           lookup_expr='lte',
+                                           widget=DateTimeInput())
+
+    class Meta:
+        fields = ['start_at', 'end_at']
 
 
 class TrackParameterCreateView(generics.CreateAPIView):
@@ -37,6 +61,8 @@ class TrackParameterCreateView(generics.CreateAPIView):
 class TrackParameterListView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = TrackParameterSerializer
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = TrackParameterListFilter
 
     def get_queryset(self):
         return TrackParameter.objects.filter(user=self.request.user)
@@ -58,6 +84,8 @@ class TrackParameterDetailView(generics.RetrieveUpdateDestroyAPIView):
 class ProductsForTrackParameterListView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = ProductListSerializer
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = ProductsForTrackParameterListViewFilter
 
     def get_queryset(self):
         tracks = TrackParameter.\
