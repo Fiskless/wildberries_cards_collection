@@ -6,7 +6,7 @@ services:
     volumes:
       - ./postgres-data:/var/lib/postgresql/data
     ports:
-      - "127.0.0.1:5432:5432"
+      - "0.0.0.0:5432:5432"
     environment:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD-password}
       POSTGRES_USER: ${POSTGRES_USER-cards}
@@ -16,7 +16,7 @@ services:
     image:
       "selenium/standalone-chrome"
     ports:
-      - "127.0.0.1:4444:4444"
+      - "0.0.0.0:4444:4444"
     shm_size: "3gb"
 
   redis:
@@ -27,25 +27,26 @@ services:
 
   celery:
     build: .
-    command: celery -A wildberries_cards_collection worker -l info
+    command: bash -c "celery -A wildberries_cards_collection worker -l info"
     volumes:
       - .:/code
     depends_on:
       - redis
-      - postgres
+      - selenium
 
   celery-beat:
     build: .
-    command: celery -A wildberries_cards_collection beat -l info
+    command: bash -c "celery -A wildberries_cards_collection beat -l info"
     volumes:
       - .:/code
     depends_on:
       - redis
-      - postgres
+      - selenium
+      - celery
 
   django:
     build: .
-    command: bash -c "python /code/manage.py migrate --noinput && python /code/manage.py collectstatic --noinput &&  gunicorn appointment_assistant_project.wsgi:application --bind 0.0.0.0:8000 --reload"
+    command: bash -c "python /code/manage.py migrate --noinput && python /code/manage.py collectstatic --noinput &&  python /code/manage.py runserver 0.0.0.0:8000"
     ports:
       - 8000:8000
     depends_on:
