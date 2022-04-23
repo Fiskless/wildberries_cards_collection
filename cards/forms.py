@@ -30,21 +30,19 @@ class TrackParameterForm(forms.ModelForm):
 
     start_at = forms.DateTimeField(widget=forms.DateTimeInput(attrs={'type':'datetime-local',
                                                                      'class': 'form-control'
-                                                                     },
-                                                              format='%Y-%m-%d, %H:%M'
+                                                                     }
                                                               ),
                                    label='Начало отслеживания',
                                    help_text='Дата начала периода отслеживания товара',
                                    error_messages={'required': ''}
                                    )
     end_at = forms.DateTimeField(widget=forms.DateTimeInput(attrs={'type':'datetime-local',
-                                                                     'class': 'form-control'
-                                                                     },
-                                                              format='%Y-%m-%d, %H:%M'
+                                                                   'class': 'form-control'
+                                                                   },
                                                               ),
-                             label='Конец отслеживания',
-                             help_text='Дата конца периода отслеживания товара',
-                             error_messages={'required': ''}
+                                 label='Конец отслеживания',
+                                 help_text='Дата конца периода отслеживания товара',
+                                 error_messages={'required': ''}
                              )
 
     class Meta:
