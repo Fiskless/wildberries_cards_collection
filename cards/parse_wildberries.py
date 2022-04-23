@@ -38,7 +38,7 @@ def find_web_element(selector):
 def get_wb_page_data(article):
     url = f'https://www.wildberries.ru/catalog/{article}/detail.aspx'
 
-    with start_chrome_driver('http://127.0.0.1:4444/wd/hub') as driver:
+    with start_chrome_driver() as driver:
 
         driver.get(url)
 
