@@ -32,18 +32,31 @@ cd wildberries_cards_collection
 
 ## Как запустить сайт
 
-Запустите базу данных и сайт:
+Проект докеризирован. Так как контейнеров много, то лучше запускать их по очереди
 
-```shell-session
-$ docker-compose up
+Запустите базы данных и селениум:
+
+```sh
+docker-compose up postgres selenium redis
+```
+
+Запустите сайт:
+
+```sh
+docker-compose up django
+```
+
+Запустите селери:
+
+```sh
+docker-compose up celery celery-beat
 ```
 
 В новом терминале не выключая сайт создайте суперпользователя для доступа к админке:
 
-```shell-session
-$ docker-compose run web ./manage.py createsuperuser
+```sh
+docker-compose run web ./manage.py createsuperuser
 ```
-
 
 
 ### Переменные окружения
@@ -60,13 +73,17 @@ $ docker-compose run web ./manage.py createsuperuser
 - `CELERY_BROKER` - брокер сообщений, используемый издателями для доставки сообщений потребителям. Используется для работы с [celery](https://docs.celeryq.dev/en/stable/getting-started/introduction.html)
 - `CELERY_RESULT_BACKEND` -  backend, используемый для хранения результатов выполнения задачю Используется для работы с [celery](https://docs.celeryq.dev/en/stable/getting-started/introduction.html)
 
+Для всех переменных установлены значения по умолчанию
 
 ## Документация по сайту
 
 Добавлены страницы:
-регистрации - `accounts/register/`,
-авторизации - `accounts/login/`,
-создания трекера - `accounts/track_parameters/`
+
+- регистрации - `accounts/register/`,
+
+- авторизации - `accounts/login/`,
+
+- создания трекера - `accounts/track_parameters/`
 
 
 ## Документация по API
@@ -120,6 +137,16 @@ $ docker-compose run web ./manage.py createsuperuser
 - URL: `api/user/product/<int:article>/`
 
 Вывод карточек, с указанным артикулом, по всем трекерам данного пользователя
+
+
+## Как запустить тесты
+
+Код покрыт тестами, для их запуска выполните следующие команды
+
+```sh
+python3 manage.py test cards 
+python3 manage.py test ./api/tests/
+```
 
 
 ## Технологии
