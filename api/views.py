@@ -7,7 +7,8 @@ from django_filters.fields import RangeField
 from django_filters.widgets import RangeWidget
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
-from api.serializers import TrackParameterSerializer, ProductListSerializer
+from api.serializers import TrackParameterSerializer, ProductListSerializer, \
+    TrackParameterListSerializer
 from cards.models import TrackParameter, Product
 from django_filters import rest_framework as filters
 
@@ -37,7 +38,7 @@ class DateTimeInput(forms.DateTimeInput):
     input_type = 'datetime-local'
 
 
-class ProductsForTrackParameterListViewFilter(filters.FilterSet):
+class ProductsListForTrackParameterViewFilter(filters.FilterSet):
 
     start_at = django_filters.DateTimeFilter(field_name='time',
                                              label='Укажите время начала',
@@ -60,7 +61,7 @@ class TrackParameterCreateView(generics.CreateAPIView):
 
 class TrackParameterListView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
-    serializer_class = TrackParameterSerializer
+    serializer_class = TrackParameterListSerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = TrackParameterListFilter
 
@@ -70,18 +71,18 @@ class TrackParameterListView(generics.ListAPIView):
 
 class TrackParameterDetailView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated]
-    serializer_class = TrackParameterSerializer
+    serializer_class = TrackParameterListSerializer
 
     def get_object(self):
         track = TrackParameter.objects.get(id=self.kwargs['pk'])
         return track
 
 
-class ProductsForTrackParameterListView(generics.ListAPIView):
+class ProductsListForTrackParameterView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = ProductListSerializer
     filter_backends = (filters.DjangoFilterBackend,)
-    filterset_class = ProductsForTrackParameterListViewFilter
+    filterset_class = ProductsListForTrackParameterViewFilter
 
     def get_queryset(self):
         tracks = TrackParameter.\
@@ -102,7 +103,7 @@ class ProductsListView(generics.ListAPIView):
         return Product.objects.filter(track__in=tracks)
 
 
-class ProductListView(generics.ListAPIView):
+class ProductsListByArticleView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = ProductListSerializer
 
