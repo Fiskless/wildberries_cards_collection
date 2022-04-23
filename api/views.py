@@ -30,7 +30,7 @@ class TrackParameterListFilter(filters.FilterSet):
 
     class Meta:
         model = TrackParameter
-        fields = ['time_interval', 'start_at', 'end_at']
+        fields = ['time_interval']
 
 
 class DateTimeInput(forms.DateTimeInput):
@@ -73,11 +73,7 @@ class TrackParameterDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = TrackParameterSerializer
 
     def get_object(self):
-        track = TrackParameter.\
-            objects.\
-            filter(id=self.kwargs['pk']).\
-            filter(start_at__gte=datetime.datetime.utcnow().replace(tzinfo=utc)).\
-            first()
+        track = TrackParameter.objects.get(id=self.kwargs['pk'])
         return track
 
 
