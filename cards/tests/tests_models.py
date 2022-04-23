@@ -68,8 +68,8 @@ class TrackParameterModelTest(TestCase):
 
     def test_object_name_in_admin(self):
         track = TrackParameter.objects.get(id=2)
-        expected_object_name = f'{track.article}:{track.start_at}:{track.end_at}'
-        self.assertEquals(expected_object_name, '74094830:2022-12-21 21:59:00+00:00:2022-12-23 02:59:00+00:00')
+        expected_object_name = f'{track.article} / {track.start_at.strftime("%Y-%m-%d %H:%M")} - {track.end_at.strftime("%Y-%m-%d %H:%M")}'
+        self.assertEquals(expected_object_name, '74094830 / 2022-12-21 21:59 - 2022-12-23 02:59')
 
 
 class ProductModelTest(TestCase):
