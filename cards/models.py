@@ -3,7 +3,6 @@ import datetime
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator
-from django.utils.timezone import utc
 
 TIME_INTERVAL_CHOICES = [
     ('1 hour', '1 час'),
@@ -44,7 +43,7 @@ class TrackParameter(models.Model):
         verbose_name_plural = 'Параметры отслеживания'
 
     def __str__(self):
-        return f'{self.article}:{self.start_at}:{self.end_at}'
+        return f'{self.article} / {self.start_at.strftime("%Y-%m-%d %H:%M")} - {self.end_at.strftime("%Y-%m-%d %H:%M")}'
 
 
 class Product(models.Model):
