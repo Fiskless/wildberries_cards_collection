@@ -27,7 +27,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env.str('SECRET_KEY')
+SECRET_KEY = env.str('SECRET_KEY', 'REPLACE_ME')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool('DEBUG', True)
@@ -124,7 +124,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Moscow'
 
 USE_I18N = True
 
@@ -167,7 +167,6 @@ REST_FRAMEWORK = {
     'TEST_REQUEST_DEFAULT_FORMAT': 'json',
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
     'DATETIME_FORMAT': "%d.%m.%Y %H:%M",
-    'DATETIME_INPUT_FORMATS': "%d.%m.%Y %H:%M",
 }
 
 
@@ -213,7 +212,7 @@ SIMPLE_JWT = {
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
-SELENIUM_SERVER_URL = 'http://127.0.0.1:4444/wd/hub'
+SELENIUM_SERVER_URL = env.str('SELENIUM_SERVER_URL', 'http://selenium:4444/wd/hub')
 
 CELERY_BROKER_URL = env.str("CELERY_BROKER", "redis://redis:6379/0")
 CELERY_BROKER_TRANSPORT_OPTIONS = {'visibility_timeout': 3600}
