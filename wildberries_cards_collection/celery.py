@@ -12,7 +12,7 @@ app.autodiscover_tasks()
 app.conf.beat_schedule = {
     'update-wb-data-every-1-hour': {
         'task': 'cards.tasks.update_beat_product_data_every_1_hour',
-        'schedule': crontab(minute=0, hour='*/3'),
+        'schedule': crontab(minute=0, hour='*/1'),
     },
     'update-wb-data-every-12-hours': {
         'task': 'cards.tasks.update_beat_product_data_every_12_hours',

@@ -47,7 +47,7 @@ def get_wb_page_data(article):
             StaleElementReferenceException,
         )
         wait_driver = WebDriverWait(driver,
-                                    timeout=5,
+                                    timeout=20,
                                     ignored_exceptions=ignored_exceptions)
 
         brand = wait_driver\
